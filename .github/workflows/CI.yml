@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+      branches: [ development ]
+  pull_request:
+      branches: [ development ]
+
+env:
+  app_name: app_${{ github.run_number }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build App
+        run: |
+         docker build -t basic:${{ env.app_name }} . &&
+         docker image save basic:${{ env.app_name }} -p ${{ env.app_name }}
+                 
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact
+          path: ${{ env.app_name }}.tgz
+          retention-days: 30
+          
+      - name: Telegram Notify
+        if: ${{ always() }}
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            Repository: ${{ github.repository }}
+            Actor: ${{ github.actor }}
+            Event: ${{ github.event_name }}
+            Job status: ${{ job.status }}
