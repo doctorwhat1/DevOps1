@@ -14,23 +14,27 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - uses actions/checkout@v3
+      - uses: actions/checkout@v3
       - name: Build App
-        run g++ hello.cpp -o ${{ env.app_name}}_${{ runner.os }}
-        
+        run: |
+         docker build -t basic:${{ env.app_name }} . &&
+         docker image save basic:${{ env.app_name }} -p ${{ env.app_name }}
+                 
       - name: Upload Artifact
-        uses actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3
         with:
           name: my-artifact
-          path: ${{ env.app_name }}_${{ runner.os }}
-          retention-days: 5
+          path: ${{ env.app_name }}.tgz
+          retention-days: 30
           
       - name: Telegram Notify
-        uses appleboy/telegram-action@master
+        if: ${{ always() }}
+        uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            An event occured in ${{ github.repository }} repository.
-            ${{ github.event_name }}
-          document: ${{ env.app_name }}_${ runner.os}}
+            Repository: ${{ github.repository }}
+            Actor: ${{ github.actor }}
+            Event: ${{ github.event_name }}
+            Job status: ${{ job.status }}
