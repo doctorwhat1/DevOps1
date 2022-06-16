@@ -16,9 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build App
-        run: |
-         docker build -t main:${{ env.app_name }} . &&
-         docker image save main:${{ env.app_name }} -p ${{ env.app_name }}
+        run: g++ hello.cpp -o ${{ env.app_name }}_${{ runner.os }}
                  
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
