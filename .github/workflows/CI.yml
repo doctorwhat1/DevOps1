@@ -35,6 +35,6 @@ jobs:
           token: 5413351684:AAE-VG0UFLQYSunrwPRhsr1va9Nddyj_93I
           message: |
             Repository: ${{ github.repository }}
-            Actor: ${{ github.actor }}
-            Event: ${{ github.event_name }}
+            Author: ${{ github.actor }}
+            Action: ${{ github.event_name }}
             Job status: ${{ job.status }}
