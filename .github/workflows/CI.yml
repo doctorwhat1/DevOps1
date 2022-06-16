@@ -24,8 +24,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: my-artifact
-          path: ${{ env.app_name }}.tgz
-          retention-days: 30
+          path: ${{ env.app_name }}_${{ runner.os }}
+          retention-days: 5
           
       - name: Telegram Notify
         if: ${{ always() }}
