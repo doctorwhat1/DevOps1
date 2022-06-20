@@ -36,4 +36,3 @@ jobs:
             Author: ${{ github.actor }}
             Action: ${{ github.event_name }}
             Job status: ${{ job.status }}
-          photo: https://s.w-x.co/in-cat_in_glasses.jpg
